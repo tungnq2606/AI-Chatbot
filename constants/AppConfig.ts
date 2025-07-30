@@ -11,6 +11,9 @@ export const AppConfig = {
   // API (when you integrate real backend)
   API_BASE_URL: 'https://your-api-url.com',
   
+  // AI Configuration
+  GOOGLE_AI_API_KEY: process.env.EXPO_PUBLIC_GOOGLE_AI_API_KEY || 'YOUR_GOOGLE_AI_API_KEY_HERE', // Replace with your actual API key
+  
   // UI
   COLORS: {
     PRIMARY: '#007AFF',

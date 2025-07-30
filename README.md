@@ -6,7 +6,8 @@ A React Native mobile application built with Expo that features user authenticat
 
 - 🔐 **User Authentication**: Complete sign-in/sign-up flow with secure token storage
 - 🏠 **Home Screen**: Welcome dashboard with user information
-- 🤖 **AI Chatbot Integration**: Ready for AI assistant integration
+- 💬 **Chat Interface**: Modern chat UI powered by react-native-gifted-chat
+- 🤖 **AI Chatbot Integration**: Mock AI responses with keyword recognition
 - 📱 **Mobile Optimized**: Native iOS and Android support
 - 🎨 **Modern UI**: Clean and intuitive user interface
 - 🔒 **Secure Storage**: Uses Expo SecureStore for sensitive data
@@ -19,6 +20,7 @@ A React Native mobile application built with Expo that features user authenticat
 - **Zustand** - State management
 - **Expo Router** - File-based routing
 - **Expo SecureStore** - Secure token storage
+- **React Native Gifted Chat** - Feature-rich chat interface
 
 ## Getting Started
 
@@ -54,6 +56,26 @@ For testing purposes, use these credentials:
 - **Sign In** (`/signin`): Login with email and password
 - **Sign Up** (`/signup`): Create new account
 - **Home** (`/home`): Welcome screen for authenticated users
+- **Chat** (`/chat`): AI chatbot interface with Gifted Chat
+
+## Chat Features
+
+The chat interface includes:
+- **Message Bubbles**: Custom styled bubbles for user and AI messages
+- **Typing Indicator**: Shows when AI is generating a response
+- **Timestamps**: Automatic timestamp display
+- **Clear Chat**: Option to clear conversation history
+- **Keyword Recognition**: Demo AI responses based on message content
+- **Avatar Support**: AI assistant displays with emoji avatar
+- **Smooth Animations**: Powered by react-native-gifted-chat
+
+### Sample AI Interactions
+- Say "hello" or "hi" for a greeting
+- Ask for "help" to get assistance information
+- Mention "weather" for weather-related responses
+- Ask about "time" to get current time
+- Say "thank you" for appreciation responses
+- Say "bye" or "goodbye" for farewell messages
 
 ## State Management
 
@@ -81,15 +103,19 @@ app/
     ├── _layout.tsx     # Auth layout
     ├── signin.tsx      # Sign in screen
     ├── signup.tsx      # Sign up screen
-    └── home.tsx        # Home screen (authenticated)
+    ├── home.tsx        # Home screen (authenticated)
+    └── chat.tsx        # Chat screen with Gifted Chat
 
 store/
-└── authStore.ts        # Zustand authentication store
+├── authStore.ts        # Zustand authentication store
+└── chatStore.ts        # Zustand chat store with IMessage format
 
 components/
 ├── ThemedText.tsx      # Themed text component
 ├── ThemedView.tsx      # Themed view component
-└── ExternalLink.tsx    # External link component
+├── ExternalLink.tsx    # External link component
+├── LoadingScreen.tsx   # Loading screen component
+└── ErrorBoundary.tsx   # Error boundary component
 ```
 
 ## Security Features
@@ -121,6 +147,30 @@ login: async (email: string, password: string) => {
   }
 }
 ```
+
+### Adding Real AI Integration
+Replace the mock AI responses in `store/chatStore.ts` with your actual AI service:
+
+```typescript
+const getAIResponse = async (userMessage: string): Promise<string> => {
+  const response = await fetch('/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: userMessage })
+  });
+  
+  const data = await response.json();
+  return data.response;
+};
+```
+
+### Customizing Chat Appearance
+The chat interface can be customized by modifying the render functions in `app/(auth)/chat.tsx`:
+
+- **renderBubble**: Customize message bubble appearance
+- **renderSend**: Customize send button
+- **renderSystemMessage**: Customize system messages
+- **textInputStyle**: Customize input field styling
 
 ### Styling
 The app uses a consistent color scheme and styling. Main colors:

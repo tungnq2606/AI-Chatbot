@@ -35,6 +35,10 @@ export default function Home() {
     );
   };
 
+  const handleStartChat = () => {
+    router.push('/(auth)/chat');
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
@@ -71,7 +75,7 @@ export default function Home() {
           </View>
         </View>
 
-        <TouchableOpacity style={styles.chatButton}>
+        <TouchableOpacity style={styles.chatButton} onPress={handleStartChat}>
           <Text style={styles.chatButtonText}>Start Chatting</Text>
         </TouchableOpacity>
 
