@@ -7,16 +7,102 @@ import {
   FlatList,
   KeyboardAvoidingView,
   Platform,
-  SafeAreaView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
+import Markdown from "react-native-markdown-display";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 
+// Markdown Text component for displaying messages
+const MarkdownText = ({ children, style, isUser }: { children: string; style?: any; isUser?: boolean }) => {
+  const markdownStyles = {
+    body: {
+      fontSize: 16,
+      lineHeight: 20,
+      color: isUser ? '#fff' : AppConfig.COLORS.TEXT_PRIMARY,
+      ...style,
+    },
+    code_inline: {
+      fontFamily: 'Courier',
+      backgroundColor: isUser ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)',
+      borderRadius: 4,
+      paddingHorizontal: 4,
+      paddingVertical: 2,
+      fontSize: 14,
+    },
+    code_block: {
+      fontFamily: 'Courier',
+      backgroundColor: isUser ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)',
+      borderRadius: 8,
+      padding: 12,
+      marginVertical: 4,
+      fontSize: 14,
+    },
+    fence: {
+      fontFamily: 'Courier',
+      backgroundColor: isUser ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)',
+      borderRadius: 8,
+      padding: 12,
+      marginVertical: 4,
+      fontSize: 14,
+    },
+    blockquote: {
+      borderLeftWidth: 4,
+      borderLeftColor: isUser ? 'rgba(255,255,255,0.5)' : '#ddd',
+      paddingLeft: 12,
+      fontStyle: 'italic' as const,
+      marginVertical: 4,
+    },
+    heading1: { 
+      fontSize: 22, 
+      fontWeight: 'bold' as const, 
+      marginVertical: 8,
+      color: isUser ? '#fff' : AppConfig.COLORS.TEXT_PRIMARY,
+    },
+    heading2: { 
+      fontSize: 20, 
+      fontWeight: 'bold' as const, 
+      marginVertical: 6,
+      color: isUser ? '#fff' : AppConfig.COLORS.TEXT_PRIMARY,
+    },
+    heading3: { 
+      fontSize: 18, 
+      fontWeight: 'bold' as const, 
+      marginVertical: 4,
+      color: isUser ? '#fff' : AppConfig.COLORS.TEXT_PRIMARY,
+    },
+    strong: { 
+      fontWeight: 'bold' as const,
+      color: isUser ? '#fff' : AppConfig.COLORS.TEXT_PRIMARY,
+    },
+    em: { 
+      fontStyle: 'italic' as const,
+      color: isUser ? '#fff' : AppConfig.COLORS.TEXT_PRIMARY,
+    },
+    link: {
+      color: isUser ? '#87CEEB' : AppConfig.COLORS.PRIMARY,
+    },
+    list_item: {
+      marginVertical: 2,
+    },
+    bullet_list: {
+      marginVertical: 4,
+    },
+    ordered_list: {
+      marginVertical: 4,
+    },
+  };
 
+  return (
+    <Markdown style={markdownStyles}>
+      {children}
+    </Markdown>
+  );
+};
 
 const ChatBubble = ({ message }: { message: Message }) => {
   const isUser = message.isUser;
@@ -36,14 +122,15 @@ const ChatBubble = ({ message }: { message: Message }) => {
       <View
         style={[styles.bubble, isUser ? styles.userBubble : styles.aiBubble]}
       >
-        <Text
+        <MarkdownText
+          isUser={isUser}
           style={[
             styles.bubbleText,
             isUser ? styles.userBubbleText : styles.aiBubbleText,
           ]}
         >
           {message.text}
-        </Text>
+        </MarkdownText>
         <Text
           style={[
             styles.timeText,
@@ -81,6 +168,7 @@ export default function Chat() {
   const { messages, isTyping, sendMessage, clearMessages } = useChatStore();
   const [inputText, setInputText] = useState("");
   const flatListRef = useRef<FlatList>(null);
+  const {top, bottom} = useSafeAreaInsets();
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -118,9 +206,9 @@ export default function Chat() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {/* Header */}
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: top }]}>
         <TouchableOpacity
           onPress={() => router.back()}
           style={styles.backButton}
@@ -154,12 +242,12 @@ export default function Chat() {
         />
 
         {/* Input Area */}
-        <View style={styles.inputContainer}>
+        <View style={[styles.inputContainer, { paddingBottom: bottom }]}>
           <TextInput
             style={styles.textInput}
             value={inputText}
             onChangeText={setInputText}
-            placeholder="Type your message..."
+            placeholder="Type your message... (Markdown supported)"
             placeholderTextColor={AppConfig.COLORS.TEXT_SECONDARY}
             multiline
             maxLength={1000}
@@ -179,7 +267,7 @@ export default function Chat() {
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </View>
   );
 }
 
